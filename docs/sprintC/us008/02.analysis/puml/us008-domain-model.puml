@@ -1,0 +1,78 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+'left to right direction
+
+skinparam classAttributeIconSize 0
+
+hide circle
+hide methods
+
+title Domain Model US008
+
+class Agent {
+}
+
+class Client {
+}
+
+class Advertisement {
+    date
+}
+
+abstract class AdvertisementRequest {
+}
+
+class Commission {
+}
+
+class CommissionType {
+    designation
+}
+
+note top of CommissionType
+    commission type
+    can be fixed ammount
+    or percentage
+end note
+
+class AcceptenceType{
+    designation
+}
+
+note right of AcceptenceType
+    acceptance type
+    can be accept
+    or decline
+end note
+
+abstract class Person {
+    name
+    passportCardNumber
+    taxNumber
+    emailAddress
+    phoneNumber
+}
+
+abstract class Employee {
+}
+
+Advertisement "*" -- "1" Agent : publishes <
+Advertisement "1" -- "1" Commission : needs >
+
+AdvertisementRequest "1" -- "1" Advertisement: becomes >
+AcceptenceType --|> AdvertisementRequest
+
+Agent "1" -- "1" Commission : defines >
+CommissionType --|> Commission
+
+AdvertisementRequest "*" - "1" Agent: analizes <
+AdvertisementRequest "1..*" -- "1" Client: submits <
+
+Employee --|> Person
+Client --|> Person
+Employee <|-- Agent
+
+@enduml

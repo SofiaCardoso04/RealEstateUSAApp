@@ -1,0 +1,225 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+'hide footbox
+actor Agent
+participant ":PublishRequestUI" as UI
+participant ":PublishRequestController" as CTRL
+participant ":Repositories" as RepositorySingleton
+participant "repositories\n:Repositories" as PLAT
+participant "advertisementRequestRepository\n:AdvertisementRequestRepository" as AdvertisementRequestRepository
+participant ":AdvertisementRequestMapper" as Mapper
+participant "AdvertisementRequestsList\n: List<AdvertisementRequests>" as AdvertisementRequestsList
+participant "AdvertisementRequestListDto\n: List<AdvertisementRequestsDto>" as AdvertisementRequestsListDTO
+participant "AdvertisementRequestDto" as advertisementRequestDto
+participant "acceptanceType\n:AcceptanceType" as AcceptanceType
+participant "commissionType\n:CommissionType" as CommissionType
+participant "clientRepository\n:ClientRepository" as ClientRepository
+participant "advertisementRepository:\nAdvertisementRepository" as AdvertisementRepository
+participant "advertisement\n:Advertisement" as Advertisement
+
+activate Agent
+
+        Agent -> UI : Ask to publish an announcement request
+
+        activate UI
+
+            UI -> CTRL** : create
+
+            UI -> CTRL : getAdvertisementRequestsSortedByTheMostRecentToTheOldest()
+            activate CTRL
+
+                     CTRL -> RepositorySingleton : getInstance()
+                    activate RepositorySingleton
+
+                        RepositorySingleton --> CTRL: repositories
+                    deactivate RepositorySingleton
+
+                    CTRL -> PLAT : getAdvertisementRequestRepository()
+                    activate PLAT
+
+                        PLAT --> CTRL: AdvertisementRequestRepository
+                    deactivate PLAT
+
+                    CTRL -> AdvertisementRequestRepository : getAdvertisementRequestsSortedByTheMostRecentToTheOldest()
+                    activate AdvertisementRequestRepository
+
+                        AdvertisementRequestRepository --> CTRL : advertisementRequestsSortedByTheMostRecentToTheOldest
+                    deactivate AdvertisementRequestRepository
+
+                    CTRL --> UI : advertisementRequestsSortedByTheMostRecentToTheOldest
+                deactivate CTRL
+
+                UI -> CTRL : getAdvertisementRequestsList()
+                activate CTRL
+
+                    CTRL -> AdvertisementRequestRepository : getAdvertisementRequestsList()
+                    activate AdvertisementRequestRepository
+
+                    AdvertisementRequestRepository --> AdvertisementRequestsList** : create()
+
+                    AdvertisementRequestRepository --> CTRL : advertisementRequestsList
+                    deactivate AdvertisementRequestRepository
+
+                    CTRL ->  Mapper : toDTO(advertisementRequestList)
+                    activate Mapper
+
+                    Mapper --> AdvertisementRequestsListDTO** : create()
+
+                loop For each object in Advertisement Request List
+                    Mapper -> AdvertisementRequestsList : advertisementRequest = get(i)
+                    activate AdvertisementRequestsList
+                    deactivate AdvertisementRequestsList
+
+                    Mapper -> Mapper : advertisementRequestDto = toDTO(advertisementRequest)
+                    activate Mapper
+
+                    Mapper --> advertisementRequestDto**: create(...)
+                    deactivate Mapper
+
+                    Mapper -> AdvertisementRequestsListDTO: add(advertisementRequestDto)
+                    activate AdvertisementRequestsListDTO
+                    deactivate AdvertisementRequestsListDTO
+                end
+
+                    Mapper --> CTRL : advertisementRequestListDto
+                    deactivate Mapper
+
+                    CTRL --> UI : advertisementRequestListDto
+                    deactivate CTRL
+
+
+            UI --> Agent : Show the list of property announcement requests and ask to select one
+        deactivate UI
+
+        Agent -> UI : Select a request
+        activate UI
+
+        UI --> Agent : Show the information it contains, show acceptence \noptions (i.e. accept or decline) and ask to select one
+        deactivate UI
+
+        Agent -> UI : Select type of acceptence
+        activate UI
+
+                UI -> CTRL : setAcceptanceType(acceptanceType)
+                activate CTRL
+
+                CTRL -> AcceptanceType** : setAcceptanceType(acceptanceType)
+                deactivate CTRL
+
+        alt Acceptance type is accept
+
+        UI --> Agent : Show type of commission options \n(i.e. fixed ammount or percentage) and ask to select one
+        deactivate UI
+
+        Agent -> UI : Select type of commission
+        activate UI
+
+                    UI -> CTRL : setCommissionType(commissionType)
+                    activate CTRL
+
+                    CTRL -> CommissionType** : setCommissionType(commissionType)
+                    deactivate CTRL
+
+            alt Commission type is fixed ammount
+                        UI --> Agent : Request data (i.e. fixed ammount)
+                        deactivate UI
+
+                        Agent -> UI : Type requested data
+                        activate UI
+
+                        else Commission type is percentage
+                            UI --> Agent : Request data (i.e. percentage)
+                            deactivate UI
+
+                            Agent -> UI : Type requested data
+                            activate UI
+            end
+
+        UI --> Agent : Request data (i.e. date)
+        deactivate UI
+
+        Agent -> UI : Type requested data
+        activate UI
+
+        UI --> Agent : Show data and ask for confirmation to publish the announcement
+        deactivate UI
+
+        Agent -> UI : Sumbit
+        activate UI
+
+                    UI -> CTRL : createAdvertisementFromRequest (advertisementRequest, date, commission)
+                    activate CTRL
+
+                       CTRL -> AdvertisementRepository : createAdvertisementFromRequest(advertisementRequest, date, commission)
+                       activate AdvertisementRepository
+
+                       AdvertisementRepository --> Advertisement** : createAdvertisementFromRequest(advertisementRequest, date, commission)
+                       activate Advertisement
+
+                       Advertisement --> AdvertisementRepository: advertisement
+                       deactivate Advertisement
+
+                       AdvertisementRepository -> AdvertisementRepository : addAdvertisement(advertisement)
+                       activate AdvertisementRepository
+
+                       AdvertisementRepository -> AdvertisementRepository : validateAdvertisement(advertisement)
+                       activate AdvertisementRepository
+
+                       AdvertisementRepository --> AdvertisementRepository
+                       deactivate AdvertisementRepository
+
+                       AdvertisementRepository --> AdvertisementRepository
+                       deactivate AdvertisementRepository
+
+                       AdvertisementRepository --> CTRL : Advertisement
+                       deactivate AdvertisementRepository
+                       deactivate Advertisement
+
+                       CTRL --> UI : Advertisement
+                        deactivate CTRL
+
+            else Acceptance type is decline
+
+                            UI -> CTRL : getClientEmail()
+                                activate CTRL
+
+                                CTRL -> PLAT : getClientRepository()
+                                activate PLAT
+
+                                PLAT --> CTRL : ClientRepository
+                                deactivate PLAT
+
+                                CTRL -> ClientRepository : getClientEmail(emailAddress)
+                                activate ClientRepository
+
+                                ClientRepository --> CTRL : clientEmail
+                                deactivate ClientRepository
+
+                                CTRL --> UI : clientEmail
+                                deactivate CTRL
+
+
+                UI --> Agent : Request data (i.e. message)
+                deactivate UI
+
+                Agent -> UI : Type requested data
+                activate UI
+
+                UI --> Agent : Ask for confirmation to decline the request
+                deactivate UI
+
+                Agent -> UI : Submit
+                activate UI
+
+        end
+
+    UI --> Agent : Display operation success
+    deactivate UI
+
+deactivate Agent
+@enduml
