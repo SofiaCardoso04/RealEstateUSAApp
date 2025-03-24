@@ -1,0 +1,155 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title System Sequence Diagram (SSD) - US002
+
+autonumber
+
+actor Agent
+participant ":System" as System
+
+activate Agent
+
+    Agent -> System : Ask to publish a sale announcement
+    activate System
+
+    System --> Agent : Request data (i.e. owner's email address)
+    deactivate System
+
+    Agent -> System : Type requested data
+    activate System
+
+    System --> Agent : Show type of request list (i.e. sale or rent) and ask to select one
+    deactivate System
+
+    Agent -> System : Select type of request
+    activate System
+
+        alt Request type is sale
+                    System --> Agent : Request data (i.e. total price)
+                    deactivate System
+
+                    Agent -> System : Type requested data
+                    activate System
+
+                    else Request type is rent
+                        System --> Agent : Request data (i.e. price per month)
+                        deactivate System
+
+                        Agent -> System : Type requested data
+                        activate System
+                end
+
+    System --> Agent : Show type of property list (i.e. house, apartment or land) and ask to select one
+    deactivate System
+
+    Agent -> System : Select type of property
+    activate System
+
+    System --> Agent : Request data (i.e. area (m2), distance from the city centre and price)
+    deactivate System
+
+    Agent -> System : Type requested data
+    activate System
+
+    System --> Agent : Request data (i.e. address (i.e. street name, city name, zip code and district))
+    deactivate System
+
+    Agent -> System : Type requested data
+    activate System
+
+    loop For at least one photograph
+        System --> Agent : Request data (i.e. URI)
+        deactivate System
+
+        Agent -> System : Type requested data
+        activate System
+    end
+
+    alt Property is Apartment/House
+        System --> Agent : Request data (i.e. number of bedrooms and parking spaces)
+        deactivate System
+
+        Agent -> System: Type requested data
+        activate System
+
+        opt If intended to indicate
+            System --> Agent : Request data (i.e. number of bathrooms)
+            deactivate System
+
+            Agent -> System: Type requested data
+            activate System
+        end
+
+        opt If intended to indicate
+            loop For none or more available equipment
+                System --> Agent : Show list (i.e. central heating and air conditioning) and ask to select one
+                deactivate System
+
+                Agent -> System: Select option
+                activate System
+            end
+        end
+
+        alt Property is House
+             System --> Agent : Show basement options (i.e. yes or no) and ask to select one
+             deactivate System
+
+             Agent -> System : Select option
+             activate System
+
+             System --> Agent : Show loft options (i.e. yes or no) and ask to select one
+             deactivate System
+
+             Agent -> System : Select option
+             activate System
+
+            opt If intended to indicate
+                System --> Agent : Show sun exposure list (i.e. north, south, east or west) and ask to select one
+                deactivate System
+
+                Agent -> System : Select option
+                activate System
+            end
+        end
+    end
+
+    System --> Agent : Show type of commission type list (i.e. fixed ammount or percentage) and ask to select one
+    deactivate System
+
+    Agent -> System : Select type of commission
+    activate System
+
+        alt Commission type is fixed ammount
+                    System --> Agent : Request data (i.e. fixed ammount)
+                    deactivate System
+
+                    Agent -> System : Type requested data
+                    activate System
+
+                    else Commission type is percentage
+                        System --> Agent : Request data (i.e. percentage)
+                        deactivate System
+
+                        Agent -> System : Type requested data
+                        activate System
+                end
+
+    System --> Agent : Request data (i.e. date)
+    deactivate System
+
+    Agent -> System : Type requested data
+    activate System
+
+    System --> Agent : Show data and ask for confirmation to publish the announcement
+    deactivate System
+
+    Agent -> System : Confirm
+    activate System
+
+    System --> Agent : Display operation success
+    deactivate System
+
+@enduml

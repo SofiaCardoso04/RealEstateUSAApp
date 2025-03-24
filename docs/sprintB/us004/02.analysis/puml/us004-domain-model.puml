@@ -1,0 +1,123 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+left to right direction
+
+skinparam classAttributeIconSize 0
+
+hide circle
+hide methods
+
+title Domain Model - US004
+
+class Client {
+
+}
+
+class Store {
+    ID
+    designation
+    phoneNumber
+    emailAddress
+}
+
+class RequestType{
+    sale
+    rent
+}
+
+class Agent {
+
+}
+
+abstract class Property {
+    area
+    price
+    distanceFromCity
+}
+
+class PropertyType {
+    land
+    house
+    apartment
+}
+
+class Photograph {
+    URI
+}
+
+abstract class Residence {
+    numberBedrooms
+    numberBathrooms
+    numberParkingSpaces
+}
+
+class House {
+    existenceBasement
+    existenceLoft
+    sunExposure
+}
+
+abstract class AdvertisementRequest {
+
+}
+
+class SaleAdvertisementRequest {
+    totalPrice
+}
+
+class RentAdvertisementRequest {
+    rentPricePerMonth
+}
+
+abstract class Address {
+    zipCode
+    streetName
+    cityName
+    district
+}
+
+abstract class Person {
+    name
+    passportCardNumber
+    taxNumber
+    emailAddress
+    phoneNumber
+}
+
+class AvailableEquipment {
+    centralHeating
+    airConditioning
+}
+
+Client "1..*" -- "1" Agent : chooses an >
+Client "0..*" -- "1" Store : chooses a >
+Client "1" - "1..*" Property : has an <
+Client --|> Person
+
+Store "1" - "1..*" Agent : works in <
+
+Property <|-- Residence
+Property <|-- PropertyType
+Property "1" -- "30" Photograph : needs >
+
+Residence <|-- House
+Residence "1" -- "1..*" AvailableEquipment : has >
+
+AdvertisementRequest "1..*" -- "1          " Client : submits <
+AdvertisementRequest "1" -- "1" Property : describes >
+AdvertisementRequest "1" -- "1..*" Agent : opens <
+
+Address "1..*" -left- "1 " Property : located at <
+
+RequestType --|> AdvertisementRequest
+
+Agent -down-|> Person
+
+Person -- Address : located at >
+
+AdvertisementRequest <|-up- SaleAdvertisementRequest
+AdvertisementRequest <|-up- RentAdvertisementRequest
+@enduml

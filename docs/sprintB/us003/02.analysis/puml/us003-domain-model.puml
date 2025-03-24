@@ -1,0 +1,32 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+
+
+skinparam classAttributeIconSize 0
+
+hide circle
+hide methods
+
+
+
+@startuml
+class SystemAdministrator {
+    -username: string
+    -password: string
+    +registerNewEmployee(): void
+}
+
+class Employee {
+    -employeeId: int
+    -firstName: string
+    -lastName: string
+    -dateOfBirth: date
+    -email: string
+    -phoneNumber: string
+}
+
+SystemAdministrator -> Employee: registers new
+@enduml

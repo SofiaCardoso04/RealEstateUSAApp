@@ -1,0 +1,134 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title System Sequence Diagram (SSD) - US004
+
+autonumber
+
+actor "Owner" as Owner
+participant ":System" as System
+
+activate Owner
+
+    Owner -> System : Ask to submit a request for listing a property
+    activate System
+
+    System --> Owner : Show type of request list (i.e. sale or rent) and ask to select one
+    deactivate System
+
+    Owner -> System : Select type of request
+    activate System
+
+    alt Request type is sale
+                System --> Owner : Request data (i.e. total price)
+                deactivate System
+
+                Owner -> System : Type requested data
+                activate System
+
+                else Request type is rent
+                    System --> Owner : Request data (i.e. price per month)
+                    deactivate System
+
+                    Owner -> System : Type requested data
+                    activate System
+            end
+
+    System --> Owner : Show store list and ask to select one
+    deactivate System
+
+    Owner -> System : Select a store
+    activate System
+
+    opt If intended to indicate
+        System --> Owner : Show responsible agents list and ask to select one
+        deactivate System
+
+        Owner -> System : Select the responsible agent
+        activate System
+    end
+
+    System --> Owner : Show type of property list (i.e. house, apartment or land) and ask to select one
+    deactivate System
+
+    Owner -> System : Select type of property
+    activate System
+
+    System --> Owner : Request data (i.e. area (m2), distance from the city centre and price)
+    deactivate System
+
+    Owner -> System : Type requested data
+    activate System
+
+    System --> Owner : Request data (i.e. address (i.e. street name, city name, zip code and district))
+    deactivate System
+
+    Owner -> System : Type requested data
+    activate System
+
+    loop For at least one photograph
+        System --> Owner : Request data (i.e. URI)
+        deactivate System
+
+        Owner -> System : Type requested data
+        activate System
+    end
+
+    alt Property is Apartment/House
+        System --> Owner : Request data (i.e. number of bedrooms and parking spaces)
+        deactivate System
+
+        Owner -> System: Type requested data
+        activate System
+
+        opt If intended to indicate
+            System --> Owner : Request data (i.e. number of bathrooms)
+            deactivate System
+
+            Owner -> System: Type requested data
+            activate System
+        end
+
+        opt If intended to indicate
+                System --> Owner : Request data (i.e. available equipment list (i.e. central heating and air conditioning))
+                deactivate System
+
+                Owner -> System: Type requested data
+                activate System
+        end
+
+        alt Property is House
+             System --> Owner : Show basement options (i.e. yes or no) and ask to select one
+             deactivate System
+
+             Owner -> System : Select option
+             activate System
+
+             System --> Owner : Show loft options (i.e. yes or no) and ask to select one
+             deactivate System
+
+             Owner -> System : Select option
+             activate System
+
+            opt If intended to indicate
+                System --> Owner : Show sun exposure list (i.e. north, south, east or west) and ask to select one
+                deactivate System
+
+                Owner -> System : Select option
+                activate System
+            end
+        end
+    end
+
+    System --> Owner : Show data and ask for confirmation
+    deactivate System
+
+    Owner -> System : Confirm
+    activate System
+
+    System --> Owner : Display operation success
+    deactivate System
+
+@enduml

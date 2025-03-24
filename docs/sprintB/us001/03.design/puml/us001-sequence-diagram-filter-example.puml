@@ -1,0 +1,45 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Filter Example
+
+autonumber
+
+participant "controller:PropertiesListController" as cntrl
+participant "filter:Filter" as fil
+collections "result:ArrayList<Property>" as result
+collections "properties:ArrayList<Property>" as list
+participant "property:Property" as prop
+
+
+->cntrl : filterResults()
+activate cntrl
+cntrl->fil** : «creates(properties)»
+cntrl->fil : filter(properties)
+activate fil
+fil-> result** : «creates»
+loop Iterate over properties' elements as property
+fil->fil : result : boolean = match(property)
+activate fil
+deactivate fil
+opt result is true
+fil->result : add(property)
+activate result
+deactivate result
+end
+end loop
+fil-->cntrl : returns filtered list
+deactivate fil
+deactivate cntrl
+
+
+
+
+
+
+
+
+
+autonumber
+
+@enduml

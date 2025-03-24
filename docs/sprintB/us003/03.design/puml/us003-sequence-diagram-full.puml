@@ -1,0 +1,129 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+
+actor "System Administrator" as sysAdmin
+participant ":RegisterEmployeeUI" as UI
+participant ":RegisterEmployeeController" as CTRL
+participant ":Repositories" as RepositorySingleton
+participant ":AgencyListRepository" as AgencyRepo
+participant ":EmployeeRepository" as EmployeeRepo
+participant "RoleListRepository" as RoleRepo
+participant "EmployeePasswordGenerator" as PassGen
+
+activate sysAdmin
+
+sysAdmin -> UI : requests to register a new employee
+activate UI
+
+UI -->CTRL:GetRoles()
+activate CTRL
+
+CTRL -> RepositorySingleton : repository = getInstance()
+activate RepositorySingleton
+
+
+RepositorySingleton-> RoleRepo:getRoleList()
+deactivate RepositorySingleton
+activate RoleRepo
+
+RoleRepo--> CTRL : roleList
+deactivate RoleRepo
+
+CTRL--> UI:roleList
+deactivate CTRL
+
+UI--> sysAdmin:show role list
+deactivate UI
+sysAdmin->UI:Asks for agencies
+activate UI
+
+UI -> CTRL : getAgencies()
+activate CTRL
+
+CTRL->RepositorySingleton :getInstance()
+activate RepositorySingleton
+
+RepositorySingleton -> AgencyRepo : getAgencyRepository()
+activate AgencyRepo
+
+deactivate RepositorySingleton
+
+AgencyRepo --> CTRL : agencyList
+deactivate AgencyRepo
+
+CTRL --> UI : agencyList
+deactivate CTRL
+
+UI -->sysAdmin:shows agency list
+deactivate UI
+
+sysAdmin -> UI : selects an agency
+activate UI
+
+UI -->sysAdmin:requests employee data
+deactivate UI
+
+sysAdmin -> UI : provides employee data
+activate UI
+
+UI -> CTRL : registerEmployee(selectedRole,sex, name,\n passportCardNumber, taxNumber, address, email, telephone, selectedAgency)
+activate CTRL
+
+
+CTRL -> RepositorySingleton :  getInstance()
+activate RepositorySingleton
+
+RepositorySingleton->EmployeeRepo:getEmployeeRepository
+deactivate RepositorySingleton
+
+activate EmployeeRepo
+
+EmployeeRepo -> EmployeeRepo : validateData()
+activate EmployeeRepo
+
+
+
+EmployeeRepo --> EmployeeRepo : validation result
+deactivate EmployeeRepo
+
+EmployeeRepo -> PassGen : generatePassword()
+deactivate EmployeeRepo
+
+activate PassGen
+
+PassGen -->PassGen : generate Password
+deactivate EmployeeRepo
+
+PassGen -> EmployeeRepo : saveEmployee()
+
+deactivate PassGen
+
+activate EmployeeRepo
+
+EmployeeRepo -->CTRL:success
+deactivate EmployeeRepo
+
+deactivate EmployeeRepo
+
+CTRL --> UI : success
+deactivate CTRL
+
+UI -> UI : displaySuccessMessage()
+activate UI
+
+UI --> sysAdmin:operation success message
+deactivate UI
+
+UI -> UI : sendPasswordByEmail(email, generatedPassword)
+activate UI
+
+UI --> sysAdmin:password sent message
+deactivate UI
+
+deactivate sysAdmin
+@enduml

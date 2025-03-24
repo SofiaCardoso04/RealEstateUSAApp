@@ -1,0 +1,83 @@
+@startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype polyline
+'skinparam linetype orto
+
+skinparam classAttributeIconSize 0
+'left to right direction
+
+class RegisterStoreUI {
+}
+class RegisterStoreController{
++RegisterStoreController()
++getStoreRepository()
++getAddressRepository()
++registerAddress(district, cityName, streetName, zipCode)
++registerStore(ID, designation, phoneNumber, e-mail, address)
+}
+class Repositories {
+-Repositories()
++getInstance() : Repositories
++getAddressRepository()
++getStoreRepository()
+}
+
+class AddressRepository {
++addAddress(address)
++registerAddress(streetName, cityName, district, zipCode)
+}
+
+class StoreRepository {
++addStore(store)
++validateStore(store)
++registerStore(address, id, phoneNumber, designation, email)
+}
+
+class Address{
+-String district
+-String cityName
+-int zipCode
+-String streetName
++Address(streetName, cityName, district, zipCode)
+}
+
+class Store{
+-String id
+-String designation
+-String phoneNumber
+-String email
+-Address address
++equals(object)
++Store(address, id, phoneNumber, designation, email)
+}
+
+
+
+
+
+
+
+
+Address -> "*" AddressRepository
+
+Store --> "*" StoreRepository
+Store"*" ---> "1" Address : located at
+
+RegisterStoreUI .> RegisterStoreController
+
+RegisterStoreController ..> Repositories : repositories
+RegisterStoreController ..> Store : store
+RegisterStoreController ..> StoreRepository : storeRepository
+RegisterStoreController ..> AddressRepository : addressRepository
+
+Repositories --> "1"AddressRepository : addressRepository
+Repositories --> "1"StoreRepository : storeRepository
+Repositories -> Repositories : instance
+
+
+
+
+
+@enduml
