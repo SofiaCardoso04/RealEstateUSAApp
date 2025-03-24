@@ -1,0 +1,158 @@
+@startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype line
+left to right direction
+skinparam classAttributeIconSize 0
+hide circle
+hide methods
+
+title Domain Model
+
+class Agent {
+}
+
+class Advertisement {
+    date
+}
+
+class "RealEstateUSA" as Organization {
+    phoneNumber
+    emailAddress
+}
+
+class Commission {
+    fixedAmount
+    percentage
+}
+
+abstract class Employee {
+    assignedAgency
+    role
+}
+
+class Client {
+}
+
+class Owner {
+}
+
+abstract class Property {
+    type
+    area
+    price
+    photographs
+    distance
+}
+
+abstract class CommonCharacteristicsApartmentHouse {
+    numberBedrooms
+    numberBathrooms
+    numberParkingSpaces
+    availableEquipment
+}
+
+abstract class Address {
+    streetName
+    cityName
+    zipCode
+    district
+}
+
+class House {
+    existenceBasement
+    existenceLoft
+    sunExposure
+}
+
+abstract class CommonCharacteristicsPerson {
+     name
+     citizenCardNumber
+     taxNumber
+     emailAddress
+     phoneNumber
+}
+
+class Store {
+    ID
+    designation
+    phoneNumber
+    emailAddress
+}
+
+class "StoreNetworkManager" as NetworkManager {
+
+}
+
+class "StoreManager" as Manager {
+
+}
+
+class "SystemAdministrator" as Administrator {
+
+}
+
+abstract class AdvertisementRequest {
+
+}
+
+class SaleAdvertisementRequest {
+    totalPrice
+}
+
+class RentAdvertisementRequest {
+    rentPricePerMonth
+}
+
+note right of Property
+    "Type" can be a Land, a House or an Apartment
+end note
+
+Administrator "1" -down "1" NetworkManager : registers >
+Administrator"1 " -down- "1..*" Manager : registers >
+Administrator "1" -down "1" Store : registers >
+
+Manager "1" - "1" Store : manages >
+
+NetworkManager "1 " -down "1..*" Store : manages a >
+
+Property "1  " -- "1" Agent : has an >
+Property "1" - "1" Address : located at >
+Property <|-- CommonCharacteristicsApartmentHouse
+
+Store "1" -left "1" Address : located at >
+
+Employee "1" - "1" Address : located at  >
+Employee "*" -up- "1" Organization : works for >
+Employee <|- Manager
+Employee <|-- NetworkManager
+Employee <|- Administrator
+Employee <|-down- Agent
+
+Owner "1" - "1" Address : located at >
+Owner "1..*" -right "1" Property : has an <
+
+Agent "1" -up- "1" Client : contacts <
+Agent "1" - "1" Store : works in >
+Agent "1" -left- "1..*" Owner: contacts <
+Agent "1" -- "1" Commission : defines >
+
+Advertisement "*" -left "1" Agent : creates <
+Advertisement "*" -left "1" Organization : publishes <
+Advertisement "1" -up "1" Commission : needs >
+Advertisement "1" -- "1" Property : has a >
+
+CommonCharacteristicsApartmentHouse <|-- House
+CommonCharacteristicsPerson <|-- Client
+CommonCharacteristicsPerson <|-down Owner
+CommonCharacteristicsPerson <|-down Employee
+
+AdvertisementRequest "1" -- "1" Owner : submits <
+AdvertisementRequest "1" -- "1" Property : describes >
+AdvertisementRequest "1" -- "1..*" Agent : opens <
+AdvertisementRequest "1" -- "1" Advertisement : becomes >
+AdvertisementRequest <|-up- SaleAdvertisementRequest
+AdvertisementRequest <|-up- RentAdvertisementRequest
+
+@enduml

@@ -1,0 +1,39 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title System Sequence Diagram (SSD) - Alternative Two
+
+autonumber
+
+actor "Agent" as Agent
+participant ":System" as System
+
+activate Agent
+
+    Agent -> System : Ask to publish a requests of sale
+    activate System
+
+    System --> Agent : Show the orders of sale
+    deactivate System
+
+    Agent -> System : Ask to open a request
+    activate System
+
+    System --> Agent : Show the information it contains and \nrequested data: comission
+    deactivate System
+
+    Agent -> System : Type requested data
+    activate System
+
+    System --> Agent : Ask for confirmation to publish the order
+    deactivate System
+
+    Agent -> System : Confirm
+    activate System
+
+        System --> Agent : Display operation success
+    deactivate System
+
+@enduml

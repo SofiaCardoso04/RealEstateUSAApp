@@ -1,0 +1,80 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title System Sequence Diagram (SSD) - Alternative One
+
+autonumber
+
+actor "Agent" as Agent
+participant ":System" as System
+
+activate Agent
+
+    Agent -> System : Ask to publish a sale announcement
+    activate System
+
+    System --> Agent : Show type of property list
+    deactivate System
+
+    Agent -> System : Select type of property
+    activate System
+
+    System --> Agent : Request data: area (m2), location, distance from the city centre,\nprice, one more photographs
+    deactivate System
+
+    Agent -> System : Type requested data
+    activate System
+
+    alt Property is Apartment/House
+        System --> Agent : Request data: number of bedrooms, number of bathrooms and\nnumber of parking spaces
+        deactivate System
+
+        Agent -> System : Type requested data
+        activate System
+
+        System --> Agent : Show available equipment list (central heating and/or air conditioning)
+        deactivate System
+
+        Agent -> System : Select available equipment list
+        activate System
+
+
+        alt Property is House
+             System --> Agent : Show basement options
+             deactivate System
+
+             Agent -> System : Select option
+             activate System
+
+             System --> Agent : Show loft options
+             deactivate System
+
+             Agent -> System : Select option
+             activate System
+
+             System --> Agent : Show sun exposure list
+             deactivate System
+
+             Agent -> System : Select option
+             activate System
+        end
+    end
+
+        System --> Agent : Requested data: comission
+    deactivate System
+
+    Agent -> System : Type requested data
+    activate System
+
+        System --> Agent : Ask for confirmation to publish the order
+    deactivate System
+
+    Agent -> System : Confirm
+    activate System
+
+        System --> Agent : Display operation success
+    deactivate System
+
+@enduml

@@ -1,0 +1,91 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title System Sequence Diagram (SSD) - Alternative One
+
+autonumber
+
+actor "Owner" as Owner
+participant ":System" as System
+
+activate Owner
+
+    Owner -> System : Submit a request for listing a property sale or rent
+    activate System
+
+    System --> Owner : Show store list
+    deactivate System
+
+    Owner -> System : Select a store
+    activate System
+
+    System --> Owner : Show responsible agents list
+    deactivate System
+
+    Owner -> System : Select the responsible agent
+    activate System
+
+    System --> Owner : Show type of property list
+    deactivate System
+
+    Owner -> System : Select type of property
+    activate System
+
+    System --> Owner : Request data: area (m2), location, distance from the city centre, price, one or more \nphotographs
+    deactivate System
+
+    Owner -> System : Type requested data
+    activate System
+
+    alt Property is Apartment/House
+        System --> Owner : Request data: number of bedrooms, number of bathrooms and parking spaces
+        deactivate System
+
+        Owner -> System: Type requested data
+        activate System
+
+        System --> Owner : Show available equiment list (central heating and/or air conditioning)
+        deactivate System
+
+        Owner -> System: Select available equiment list
+        activate System
+
+        alt Property is House
+             System --> Owner : Show basement options
+             deactivate System
+
+             Owner -> System : Select option
+             activate System
+
+             System --> Owner : Show loft options
+             deactivate System
+
+             Owner -> System : Select option
+             activate System
+
+             System --> Owner : Show sun exposure list
+             deactivate System
+
+             Owner -> System : Select option
+             activate System
+        end
+    end
+
+    System --> Owner : Show sale or rent list
+    deactivate System
+
+    Owner -> System : Select option
+    activate System
+
+    System --> Owner : Show data and ask for confirmation
+    deactivate System
+
+    Owner -> System : Confirm
+    activate System
+
+    System --> Owner : Display operation success
+    deactivate System
+
+@enduml

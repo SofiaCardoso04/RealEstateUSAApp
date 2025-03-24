@@ -1,0 +1,154 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+'title System Sequence Diagram (SSD) - Alternative One
+
+autonumber
+
+actor "Unregistered User" as Employee
+participant ":System" as System
+
+activate Employee
+
+    Employee -> System : Request properties list
+    activate System
+
+        System --> Employee : Return the list sorted by the most recent listings
+
+    Employee <-- System : Asks if the user wishes to filter the list
+     deactivate System
+
+        Employee --> System : Employee responds
+    alt Employee wants to filter results
+
+               activate System
+
+            System --> Employee :  Ask the Employee if he wants to choose between for sale properties and renting properties
+                deactivate System
+
+            Employee -> System : Employee responds
+
+            alt Employee wants to choose between for sale and renting properties
+            activate System
+
+                    System --> Employee : Ask the Employee to choose between rented or for sale properties
+
+                    deactivate System
+
+                    Employee -> System : Employee responds
+
+                    activate System
+
+                    System --> Employee : Divides properties between renting and selling and lists them, sorts them by most recently added
+                    System --> Employee : Ask the Employee if he wants to choose the type of property
+                    Employee <-- System : Employee responds
+
+
+
+            else Employee does not want to choose between for sale and renting properties
+
+            end
+
+            alt Employee wants to choose the type of property
+
+            activate System
+
+                System --> Employee :  Ask the Employee to choose the type of property
+                        deactivate System
+
+                    Employee -> System : Employee chooses
+
+                    activate System
+
+                    System --> Employee : Lists properties with the chosen type of property and the for sale or renting choice and sorts them by most recently added
+                    System --> Employee : Ask the Employee if he wants to choose the number of rooms
+
+                    deactivate System
+
+                    Employee -> System : Employee responds
+
+
+
+            else Employee does not want to choose the type of property
+
+            end
+
+            alt Employee wants to choose the number of rooms of the property
+
+            activate System
+
+                    System --> Employee : Asks client to choose the number of rooms
+
+                    deactivate System
+
+                    Employee -> System : Employee responds
+
+                    activate System
+
+                    System --> Employee : Lists properties with type of property and number and the for sale or renting choice and sorts them by most recently added
+
+                    deactivate System
+
+
+
+
+            else Employee does not want to choose the number of rooms of the property
+
+            end
+
+
+
+    else Employee does not want to filter the list
+
+    end
+
+    alt Employee wants to sort results
+
+            activate System
+
+            System --> Employee : Ask the User if he wants to sort the list by price
+
+            deactivate System
+
+            Employee -> System : User responds
+
+            alt Employee wants to sort by price
+
+
+                System --> Employee : Lists  properties by price and  most recently added
+
+
+            else User does not want to sort by price
+
+                activate System
+
+                System --> Employee : Ask the User if he wants to sort the list by parish
+                deactivate System
+
+                Employee -> System : User responds
+
+                alt Employee wants to sort by parish
+
+
+
+                    activate System
+
+                    System --> Employee : Lists properties by parish and most recently added
+
+                else Employee does not want to sort by parish
+
+                    deactivate System
+
+                end
+
+            end
+
+        else Employee does not want to sort results
+
+
+        end
+
+
+@enduml

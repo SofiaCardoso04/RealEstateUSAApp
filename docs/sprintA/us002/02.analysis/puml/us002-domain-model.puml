@@ -1,0 +1,118 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+left to right direction
+
+skinparam classAttributeIconSize 0
+
+hide circle
+hide methods
+
+title Domain Model US002
+
+class Agent {
+}
+
+class Owner {
+}
+
+class Advertisement {
+    date
+}
+
+abstract class AdvertisementRequest {
+}
+
+class SaleAdvertisementRequest {
+    totalPrice
+}
+
+class RentAdvertisementRequest {
+    rentPricePerMonth
+}
+
+class House {
+    existenceBasement
+    existenceLoft
+    sunExposure
+}
+
+abstract class CommonCharacteristicsApartmentHouse {
+    numberBedrooms
+    numberBathrooms
+    numberParkingSpaces
+    availableEquipment
+}
+
+abstract class Property {
+    type
+    area
+    distance
+    price
+    photographs
+}
+
+class Commission {
+    fixedAmount
+    percentage
+}
+
+abstract class Address {
+    zipCode
+    streetName
+    cityName
+    district
+}
+
+abstract class CommonCharacteristicsPerson {
+    name
+    citizenCardNumber
+    taxNumber
+    emailAddress
+    phoneNumber
+}
+
+class "RealEstateUSA" as Organization {
+    phoneNumber
+    emailAddress
+}
+
+abstract class Employee {
+    assignedAgency
+    role
+}
+
+note right of Property
+    Type can be a Land, a House or an Apartment
+end note
+
+Advertisement "*" -- "1" Agent : publishes <
+Advertisement "1" -- "1" Commission : needs >
+AdvertisementRequest "1" -- "1" Advertisement: becomes >
+
+Agent "1" - "1..*" Owner: contacts <
+Agent "1" -- "1" Commission : defines >
+
+Property <|-- CommonCharacteristicsApartmentHouse
+CommonCharacteristicsApartmentHouse <|-- House
+Property "1" -- "1" Owner : has an >
+
+AdvertisementRequest "*" - "1" Agent: analizes <
+AdvertisementRequest "1" - "1" Property: describes >
+
+AdvertisementRequest "1..*" - "1" Owner: submits <
+
+Address "1" -- "1 " Property : located at <
+
+Employee --|> CommonCharacteristicsPerson
+Owner --|> CommonCharacteristicsPerson
+
+SaleAdvertisementRequest --|> AdvertisementRequest
+RentAdvertisementRequest --|> AdvertisementRequest
+
+Employee <|-- Agent
+Employee "*" -- "1" Organization : works for >
+
+@enduml

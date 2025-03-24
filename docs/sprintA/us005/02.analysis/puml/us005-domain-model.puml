@@ -1,0 +1,61 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+'left to right direction
+
+skinparam classAttributeIconSize 0
+
+hide circle
+hide methods
+
+'title Domain Model
+
+'class Platform {
+'  -description
+'}
+
+class Store {
+    ID
+    designation
+    phoneNumber
+    emailAddress
+    }
+
+class Address {
+     streetName
+     cityName
+     zipCode
+     district
+    }
+
+
+class Employee {
+    name
+    citizenCardNumber
+    taxNumber
+    emailAddress
+    phoneNumber
+    assignedAgency
+    role
+}
+
+class "System Administrator" as Administrator {
+
+}
+
+
+
+
+
+Administrator "1" --- "1..* " Store : registers >
+Employee "1" --"1" Administrator : role of >
+Store "1" - "1" Address : located at >
+
+
+
+
+
+
+@enduml
