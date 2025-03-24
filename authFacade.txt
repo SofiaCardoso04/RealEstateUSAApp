@@ -1,0 +1,9 @@
+Main Administrator;admin@this.app;admin;ADMINISTRATOR
+Employee;employee@this.app;pwd;EMPLOYEE
+Jorge;agent@this.app;agent;AGENT
+Client;client@this.app;client;CLIENT
+Network Manager;network@this.app;network;NETWORK MANAGER
+Joao;joao@gmail.com;joao;CLIENT
+Miguel;miguel@gmail.com;miguel;CLIENT
+Francisco;francisco@gmail.com;francisco;CLIENT
+Store Manager;store@gmail.com;store;STORE MANAGER
