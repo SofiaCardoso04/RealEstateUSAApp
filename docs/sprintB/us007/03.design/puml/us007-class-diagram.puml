@@ -1,0 +1,83 @@
+@startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype polyline
+'skinparam linetype orto
+
+skinparam classAttributeIconSize 0
+
+'left to right direction
+
+
+class Account {
+    - person: Person
+    - password: String
+    + Account(person, password)
+    + getPerson()
+    + getPassword()
+}
+
+class RegisterAccountRepository {
+    - accounts: List<Account>
+    + getAccounts()
+    + registerAccount(person, password)
+    + validate(account)
+    + addAccount(account)
+}
+
+class RegisterAccountRepository {
+    + getTaskCategoryByDescription(description)
+}
+
+
+
+class AddressRepository {
+    - addressList: List<Address>
+    + registerAddress(streetName, cityName, zipCode, district)
+    + addAddress(address)
+}
+
+class Repositories {
+    - Repositories()
+    + getInstance() : Repositories
+    + getAddressRepository()
+    + getAccountRepository()
+}
+
+class RegisterAccountController {
++RegisterAccountController()
++getAddressRepository()
++getAccountRepository()
++registerAddress(district, cityName, streetName, zipCode)
++registerAccount(person, password, address)
++registerAccount(person, password)
+
+
+}
+
+
+
+class RegisterAccountUI {
+}
+
+Repositories -> Repositories : instance
+
+RegisterAccountUI .> RegisterAccountController
+
+RegisterAccountController .> Repositories : repositories
+
+Repositories -> "1" AddressRepository
+
+
+RegisterAccountController ..> RegisterAccountRepository : registerAccountRepository
+RegisterAccountController ..> AddressRepository : adressRepository
+
+Repositories --> "1" RegisterAccountRepository
+
+RegisterAccountRepository --> "*" Account
+
+
+
+
+@enduml
