@@ -1,0 +1,74 @@
+@startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype polyline
+'skinparam linetype orto
+
+skinparam classAttributeIconSize 0
+
+'left to right direction
+
+class ApplicationSession
+{
+    + static getInstance()
+    + getCurrentSession()
+}
+
+class UserSession
+{
+    + getUserEmail()
+}
+
+class RegisterEmployeeController {
+  +createEmployee(name, phoneNumber, email, address, citizenCardNumber, EmployeeID,Role)
+  +saveEmployee()
+}
+class PasswordGenerator {
+  +generatePassword()
+}
+class Employee {
+  -name: String
+  -phoneNumber: int
+  -email: String
+  -address: String
+  -PassaportNumber: int
+  -EmployeeID: int
+  -Role:String
+  -Agency:int
+  +create(name, phoneNumber, email, address, PassaportNumber, EmployeeID,Role,Agency)
+  +getEmail()
+  +getName()
+
+}
+
+class Repositories {
+    - Repositories()
+    + getInstance() : Repositories
+    + getOrganizationRepository()
+}
+class SystemAdministrator {
+    - name: String
+    - email: String
+    - position: String
+    - phone: String
+}
+
+
+class RoleRepository{
++GetEmployeeRoleByID()
+}
+class StoreRepository{
++GetStoreByID()
+}
+
+ApplicationSession -> ApplicationSession : instance
+ApplicationSession --> "1" UserSession : userSession
+SystemAdministrator --|> Employee
+RegisterEmployeeController ..> Employee
+RegisterEmployeeController ..> Repositories
+PasswordGenerator..> Repositories
+UserSession-->SystemAdministrator
+RoleRepository..>RegisterEmployeeController
+StoreRepository..>RegisterEmployeeController
+@enduml

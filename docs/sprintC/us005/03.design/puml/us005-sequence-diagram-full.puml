@@ -1,0 +1,126 @@
+@startuml
+
+title US05 SD - Alternative One
+
+autonumber
+'hide footbox
+actor "System Administrator" as ADM
+
+participant ":RegisterStoreUI" as UI
+participant ":RegisterStoreController" as CTRL
+participant ":Repositories" as REPO
+participant "repositories :Repositories" as repo
+participant ":AddressRepository" as REPOADDRESS
+participant ":StoreRepository" as REPOSTORE
+participant "address :Address" as ADDRESS
+participant "store :Store" as STORE
+
+
+activate ADM
+
+ADM -> UI :asks to register Store
+activate UI
+
+UI -> CTRL** : create
+
+UI --> ADM : Request address (district, city name, street name and zip code of the store)
+deactivate UI
+
+ADM -> UI :  Submit requested address (district, city name, street name and zip \ncode of the store)
+activate UI
+
+UI -> CTRL : registerAddress(district, cityName, streetName, zipCode)
+activate CTRL
+
+
+
+CTRL -> REPO : getInstance()
+activate REPO
+REPO --> CTRL : repositories
+deactivate REPO
+
+
+
+CTRL -> repo : getAddressRepository()
+activate repo
+repo --> CTRL : AddressRepository
+deactivate repo
+
+
+CTRL -> REPOADDRESS : registerAddress(district, cityName, streetName, zipCode)
+
+activate REPOADDRESS
+
+
+REPOADDRESS -> ADDRESS**: Address(district, cityName, streetName, zipCode)
+activate ADDRESS
+ADDRESS --> REPOADDRESS : address
+deactivate ADDRESS
+
+REPOADDRESS -> REPOADDRESS : addAdress(address)
+REPOADDRESS-->REPOADDRESS
+REPOADDRESS --> CTRL : address
+deactivate REPOADDRESS
+
+CTRL --> UI : address
+UI --> ADM : Request data (ID, designation, phone number, e-mail)
+deactivate UI
+
+deactivate CTRL
+
+deactivate UI
+
+ADM -> UI : Submit requested data (ID, designation, phone number, e-mail)
+activate UI
+UI --> ADM : Ask for the administrator confirmation
+
+deactivate UI
+
+ADM -> UI : Give confirmation
+activate UI
+
+UI -> CTRL : registerStore(ID, designation, phoneNumber, email, address)
+activate CTRL
+
+
+CTRL -> REPO : getInstance()
+activate REPO
+REPO --> CTRL : repositories
+deactivate REPO
+
+
+
+CTRL -> repo : getStoreRepository()
+activate repo
+repo --> CTRL : StoreRepository
+deactivate repo
+
+
+CTRL -> REPOSTORE : registerStore(ID, designation, phoneNumber, email, address)
+activate REPOSTORE
+
+REPOSTORE -> STORE** : Store(ID, designation, phoneNumber, e-mail, address)
+activate STORE
+STORE --> REPOSTORE : store
+deactivate STORE
+
+
+REPOSTORE -> REPOSTORE : validateStore(store)
+REPOSTORE -> REPOSTORE : addStore(store)
+REPOSTORE --> REPOSTORE :
+REPOSTORE --> REPOSTORE :
+REPOSTORE --> CTRL : store
+deactivate REPOSTORE
+
+CTRL --> UI  : store
+
+deactivate repo
+deactivate CTRL
+
+
+UI --> ADM : Display operation success
+
+deactivate UI
+
+
+@enduml

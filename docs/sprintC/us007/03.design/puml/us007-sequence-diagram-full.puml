@@ -1,0 +1,120 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+'hide footbox
+actor "Unregistered User" as ADM
+participant ":RegisterAccountUI" as UI
+participant ":RegisterAccountController" as CTRL
+participant ":Repositories" as RepositorySingleton
+participant "repositories\n:Repositories" as PLAT
+participant "addressRepository\n:AddressRepository" as ADDR
+participant "accountRepository\n:AccountRepository" as ACCOUNTR
+participant "address\n:Address" as ADD
+participant "account\n:Account" as ACCOUNT
+
+activate ADM
+
+        ADM -> UI : Ask to register an account
+
+        activate UI
+
+            UI -> CTRL** : create
+
+        UI --> ADM : Request data (i.e. name, email address, password,\npassport card number, tax number and telephone number)
+    deactivate UI
+
+    ADM -> UI : Type requested data
+    activate UI
+
+    opt If intended to register with address
+            UI --> ADM : Request data (i.e. street name, city name, zip code, district)
+            deactivate UI
+
+            ADM -> UI: Type requested data
+            activate UI
+    end
+
+
+        UI --> ADM : Show data and ask for confirmation
+    deactivate UI
+
+    ADM -> UI : Confirm
+    activate UI
+
+        opt If intended to register with address
+
+            UI -> CTRL: registerAccount(name, emailAddress, password,\npassportCardNumber, taxNumber, telephoneNumber,\nstreetName, doorNumber, ZIPCode, cityName)
+              activate CTRL
+
+                        CTRL -> RepositorySingleton : getInstance()
+                        activate RepositorySingleton
+
+                            RepositorySingleton --> CTRL : repositories
+                        deactivate RepositorySingleton
+
+                        CTRL -> PLAT : getAddressRepository()
+                        activate PLAT
+
+                            PLAT --> CTRL : addressRepository
+                        deactivate PLAT
+
+                        CTRL -> ADDR : registerAddress (streetName, doorNumber, ZIPCode, cityName)
+                        activate ADDR
+
+                            ADDR -> ADD** : createsAddress (streetName, doorNumber, ZIPCode, cityName)
+                            ADDR -> ADDR : addAddress(address)
+                            ADDR -> ADDR : validateAddress
+                            ADDR --> ADDR
+                            ADDR --> ADDR
+                            ADDR --> CTRL : address
+                            deactivate ADDR
+
+
+
+                        CTRL -> RepositorySingleton : getInstance()
+                        activate RepositorySingleton
+
+                            RepositorySingleton --> CTRL : repositories
+                        deactivate RepositorySingleton
+
+                        CTRL -> PLAT : getAccountRepository()
+                        activate PLAT
+
+                            PLAT --> CTRL : accountRepository
+                        deactivate PLAT
+
+
+
+                            CTRL -> ACCOUNTR: registerAccount(name, emailAddress, password,\npassportCardNumber, taxNumber, telephoneNumber, address)
+                        activate ACCOUNTR
+
+                        ACCOUNTR -> ACCOUNT**: registerAccount(name, emailAddress, password,\npassportCardNumber, taxNumber, telephoneNumber, address)
+                        activate ACCOUNT
+
+
+        else If not intended to register with address
+            UI -> CTRL: registerAccount (name, emailAddress, password,\npassportCardNumber, taxNumber, telephoneNumber, address)
+                     CTRL -> ACCOUNTR: registerAccount(name, emailAddress, password,\npassportCardNumber, taxNumber, telephoneNumber)
+                        ACCOUNTR ->ACCOUNT: registerAccount (name, emailAddress, password,\npassportCardNumber, taxNumber, telephoneNumber)
+                        deactivate ACCOUNT
+        end
+
+        ACCOUNTR -> ACCOUNTR: addAccount(account)
+        ACCOUNTR -> ACCOUNTR: validateAccount(account)
+        ACCOUNTR --> ACCOUNTR
+        ACCOUNTR --> ACCOUNTR
+
+
+        ACCOUNTR --> CTRL: Account
+    deactivate ACCOUNTR
+        CTRL --> UI: Account
+       deactivate CTRL
+    UI --> ADM: Display operation success
+
+deactivate ADM
+
+@enduml

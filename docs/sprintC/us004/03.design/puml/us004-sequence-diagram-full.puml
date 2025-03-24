@@ -1,0 +1,394 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+'hide footbox
+actor Owner
+participant ":AddRequestUI" as UI
+participant ":AddRequestController" as CTRL
+participant ":Repositories" as RepositorySingleton
+participant "repositories\n:Repositories" as PLAT
+participant "storeRepository:\nStoreRepository" as StoreRepository
+participant "addressRepository:\nAddressRepository" as AddressRepository
+participant "propertyRepository:\nPropertyRepository" as PropertyRepository
+participant "advertisementRequestRepository\n:AdvertisementRequestRepository" as AdvertisementRequestRepository
+participant "advertisementRequest\n:AdvertisementRequest" as AdvertisementRequest
+participant "propertyType\n:PropertyType" as PropertyType
+participant "property\n:Property" as Property
+participant "residence\n:Residence" as Residence
+participant "house\n:House" as House
+participant "requestType\n:RequestType" as RequestType
+participant "store\n:Store" as Store
+participant ":Address" as Address
+participant "agent\n:Agent" as Agent
+participant "agentList:\nList<Agent>" as agentList
+participant "property\n:Property" as Property
+
+
+activate Owner
+
+        Owner -> UI : Ask to submit a request for listing a property
+        activate UI
+
+        UI -> CTRL** : create
+
+        UI --> Owner : Show type of request list (i.e. sale or rent) and ask to select one
+        deactivate UI
+
+
+
+        Owner -> UI : Select type of request
+        activate UI
+
+                    UI -> CTRL : setRequestType(requestType)
+                    activate CTRL
+
+                    CTRL -> RequestType : setRequestType(requestType)
+                    activate RequestType
+                    deactivate CTRL
+                    deactivate RequestType
+
+        alt Request type is sale
+            UI --> Owner : Request data (i.e. total price)
+            deactivate UI
+
+            Owner -> UI : Type requested data
+            activate UI
+
+            else Request Type is rent
+                UI --> Owner : Request data (i.e. price per month)
+                deactivate UI
+
+                Owner -> UI : Type requested data
+                activate UI
+        end
+
+            UI -> CTRL : getStore()
+            activate CTRL
+
+                CTRL -> RepositorySingleton : getInstance()
+                activate RepositorySingleton
+
+                    RepositorySingleton --> CTRL: repositories
+                deactivate RepositorySingleton
+
+                CTRL -> PLAT : getStoreRepository()
+                activate PLAT
+
+                    PLAT --> CTRL: StoreRepository
+                deactivate PLAT
+
+                CTRL -> StoreRepository : getStore()
+                activate StoreRepository
+
+                    StoreRepository --> CTRL : storeList
+                deactivate StoreRepository
+
+                CTRL --> UI : storeList
+            deactivate CTRL
+
+    UI --> Owner : Show store list and ask to select one
+    deactivate UI
+
+    Owner -> UI : Select a store
+    activate UI
+
+    opt If intended to indicate
+            UI -> CTRL : getAgentList(selectedStore)
+            activate CTRL
+
+                CTRL -> Store : getAgentList(selectedStore)
+                activate Store
+
+                Store -> agentList** : create
+
+                loop For each employee
+                    Store -> Agent : has(agent)
+                    activate Agent
+
+                    Agent --> Store : true/false
+                    deactivate Agent
+
+                    alt True
+                        Store -> agentList : addAgentToList(employee)
+                        activate agentList
+                        deactivate agentList
+                    end
+
+                end
+
+                    Store --> CTRL: agentList
+                deactivate Store
+
+                CTRL --> UI : agentList
+            deactivate CTRL
+
+
+        UI --> Owner : Show responsible agents list and ask to select one
+        deactivate UI
+
+        Owner -> UI : Select the responsible agent
+        activate UI
+
+        else If not intended to indicate
+                    UI -> CTRL : getAgentList(selectedStore)
+                    activate CTRL
+
+                    CTRL -> Store : getAgentList(selectedStore)
+                    activate Store
+
+                    loop For each employee
+                          Store -> Agent : has(agent)
+                          activate Agent
+
+                          Agent --> Store : true/false
+                          deactivate Agent
+
+                          alt True
+                             Store -> agentList : addAgentToList(employee)
+                             activate agentList
+                          end
+                    end
+
+                    agentList --> Store : addDefaultAgent(defaultAgent)
+                    deactivate agentList
+
+                    Store --> CTRL : addDefaultAgent(defaultAgent)
+                    deactivate Store
+
+                    CTRL --> UI : addDefaultAgent(defaultAgent)
+                    deactivate CTRL
+        end
+
+    UI --> Owner : Show type of property list (i.e. house, apartment or land) and ask to select one
+    deactivate UI
+
+    Owner -> UI : Select type of property
+    activate UI
+
+        UI -> CTRL : setPropertyType(propertyType)
+        activate CTRL
+
+        CTRL -> PropertyType : setPropertyType(propertyType)
+        activate PropertyType
+        deactivate CTRL
+        deactivate PropertyType
+
+    UI --> Owner : Request data (i.e. area (m2) and distance from the city centre)
+    deactivate UI
+
+    Owner -> UI : Type requested data
+    activate UI
+
+    UI --> Owner : Request data (i.e. address (i.e. streetName, cityName, zipCode, district))
+    deactivate UI
+
+    Owner -> UI : Type requested data
+    activate UI
+
+    UI -> CTRL : createAddress(streetName, cityName, zipCode, district)
+                activate CTRL
+
+                CTRL -> AddressRepository : createAddress(streetName, cityName, zipCode, district)
+                activate AddressRepository
+
+
+                AddressRepository -> Address** : createAddress(streetName, cityName, zipCode, district)
+                activate Address
+
+
+                Address --> AddressRepository : address
+                deactivate Address
+
+
+
+                AddressRepository -> AddressRepository : addAddress(address)
+
+                AddressRepository --> AddressRepository
+
+                AddressRepository --> AddressRepository
+
+                AddressRepository --> CTRL : address
+                deactivate CTRL
+                deactivate AddressRepository
+
+                CTRL --> UI : address
+
+    loop For at least one photograph
+        UI --> Owner : Request data (i.e. URI)
+        deactivate UI
+
+        Owner -> UI : Type requested data
+        activate UI
+
+              UI -> CTRL : createPhotographList(URI)
+              activate CTRL
+
+              CTRL -> Property : createPhotographList(URI)
+              deactivate CTRL
+
+              activate Property
+              loop While verification == true
+                   Property -> Property : addPhotograph(photograph)
+              end
+
+              deactivate Property
+    end
+
+UI -> CTRL : createProperty (area, distanceFromCity, photograph, address, price)
+        activate CTRL
+
+            CTRL -> PropertyRepository : createProperty(area, distanceFromCity, photograph, address, price)
+            activate PropertyRepository
+
+            PropertyRepository -> Property** : createProperty(area, distanceFromCity, photograph, address, price)
+            activate Property
+
+            Property --> PropertyRepository : property
+            deactivate Property
+
+            PropertyRepository -> PropertyRepository : addProperty (property)
+            PropertyRepository -> PropertyRepository : validateProperty (property)
+            PropertyRepository --> PropertyRepository
+            PropertyRepository --> PropertyRepository
+
+            PropertyRepository --> CTRL : property
+
+            deactivate PropertyRepository
+
+            CTRL --> UI : property
+            deactivate CTRL
+
+    alt Property is Apartment/House
+        UI --> Owner : Request data (i.e. number of bedrooms and parking spaces)
+        deactivate UI
+
+        Owner -> UI: Type requested data
+        activate UI
+
+        opt If intended to indicate
+            UI --> Owner : Request data (i.e. number of bathrooms)
+            deactivate UI
+
+            Owner -> UI: Type requested data
+            activate UI
+        end
+
+        opt If intended to indicate
+                UI --> Owner : Request data (i.e. available equipment (i.e. central heating and air conditioning))
+                deactivate UI
+
+                Owner -> UI: Type request data
+                activate UI
+        end
+
+                UI -> CTRL : createResidence (area, distanceFromCity, price, photograph, address, \nnumberBedrooms, numberBathrooms, numberParkingSpaces, availableEquipment)
+                activate CTRL
+
+                    CTRL -> PropertyRepository : createResidence(area, distanceFromCity, price, photograph, address, \nnumberBedrooms, numberBathrooms, numberParkingSpaces, availableEquipment)
+                    activate PropertyRepository
+
+                    PropertyRepository -> Residence** : createResidence(area, distanceFromCity, price, photograph, address, \nnumberBedrooms, numberBathrooms, numberParkingSpaces, availableEquipment)
+                    activate Residence
+
+                    Residence --> PropertyRepository : residence
+                    deactivate Residence
+
+                    PropertyRepository -> PropertyRepository : addResidence (residence)
+                    PropertyRepository -> PropertyRepository : validateResidence (residence)
+                    PropertyRepository --> PropertyRepository
+                    PropertyRepository --> PropertyRepository
+
+                    PropertyRepository --> CTRL : residence
+
+                    deactivate PropertyRepository
+
+                    CTRL --> UI : residence
+                    deactivate CTRL
+
+        alt Property is House
+             UI --> Owner : Show basement options (i.e. yes or no) and ask to select one
+             deactivate UI
+
+             Owner -> UI : Select option
+             activate UI
+
+             UI --> Owner : Show loft options (i.e. yes or no) and ask to select one
+             deactivate UI
+
+             Owner -> UI : Select option
+             activate UI
+
+            opt If intended to indicate
+                UI --> Owner : Show sun exposure list (i.e. north, south, east or west) and ask to select one
+                deactivate UI
+
+                Owner -> UI : Select option
+                activate UI
+            end
+                UI -> CTRL : createHouse (area, distanceFromCity, price, photograph, address, numberBedrooms, numberBathrooms, \nnumberParkingSpaces, availableEquipment, existenceBasement, existenceLoft, sunExposure)
+                            activate CTRL
+
+                                CTRL -> PropertyRepository : createHouse(area, distanceFromCity, price, photograph, address, numberBedrooms, numberBathrooms, \nnumberParkingSpaces, availableEquipment, existenceBasement, existenceLoft, sunExposure)
+                                activate PropertyRepository
+
+                                PropertyRepository -> House** : createHouse(area, distanceFromCity, price, photograph, address, numberBedrooms, numberBathrooms, \nnumberParkingSpaces, availableEquipment, existenceBasement, existenceLoft, sunExposure)
+                                activate House
+
+                                House --> PropertyRepository : residence
+                                deactivate House
+
+                                PropertyRepository -> PropertyRepository : addHouse (house)
+                                PropertyRepository -> PropertyRepository : validateHouse (house)
+                                PropertyRepository --> PropertyRepository
+                                PropertyRepository --> PropertyRepository
+
+                                PropertyRepository --> CTRL : house
+
+                                deactivate PropertyRepository
+
+                                CTRL --> UI : house
+                                deactivate CTRL
+        end
+    end
+
+    UI --> Owner : Show data and ask for confirmation
+    deactivate UI
+
+
+    Owner -> UI : Confirm
+    activate UI
+
+    UI -> CTRL : createAdvertisementRequest(emailAddress, store, agent, property, propertyType, requestType)
+    activate CTRL
+
+       CTRL -> AdvertisementRequestRepository** : createAdvertisementRequest(emailAddress, store, agent, property, propertyType, requestType)
+       activate AdvertisementRequestRepository
+
+       AdvertisementRequestRepository -> AdvertisementRequest** : createAdvertisementRequest(emailAddress, store, agent, property, propertyType, requestType)
+       activate AdvertisementRequest
+
+       AdvertisementRequest --> AdvertisementRequestRepository : AdvertisementRequest
+       deactivate AdvertisementRequest
+
+       AdvertisementRequestRepository -> AdvertisementRequestRepository : addRequest(request)
+       AdvertisementRequestRepository -> AdvertisementRequestRepository : validateRequest(request)
+       AdvertisementRequestRepository --> AdvertisementRequestRepository
+       AdvertisementRequestRepository --> AdvertisementRequestRepository
+
+       AdvertisementRequestRepository --> CTRL : Advertisement Request
+       deactivate AdvertisementRequestRepository
+       deactivate AdvertisementRequest
+
+       CTRL --> UI : Advertisement Request
+       deactivate CTRL
+
+    UI --> Owner : Display operation success
+    deactivate UI
+
+deactivate Owner
+
+@enduml

@@ -1,0 +1,35 @@
+@startuml
+
+skinparam packageStyle circle
+
+left to right direction
+
+    usecase "UC 1 - Display listed properties" as UC1
+    "Unregistered User" --> UC1
+    usecase "UC 2 - Publish any sale announcement on the system." as UC2
+    Agent --> UC2
+    usecase "UC 5 - Register a new store" as UC5
+    "System Administrator" --> UC5
+    usecase "UC 3 - Register a new employee" as UC3
+    "System Administrator" --> UC3
+    usecase "UC 4 - Request for listing a property sale or rent, choosing the responsible agent" as UC4
+    Owner --> UC4
+    usecase "UC 7 - Register in the system to buy, sell or rent properties." as UC7
+    "Unregistered User" --> UC7
+    usecase "UC 8 - List The Property Announcement Requests Made To Myself." as UC8
+    "Agent" --> UC8
+    usecase "UC 9 - Leave a message to the agent to schedule a visit to a property of my interest" as UC9
+    "Client" --> UC9
+    usecase "UC 10 - Place an order to purchase the property, submitting the order amount." as UC10
+    "Client" --> UC10
+    usecase "UC 11 - List real estate purchase orders to accept or decline a purchase order for a property. After accepting or declining, an email notification should be sent to the customer" as UC11
+    "Agent" --> UC11
+    usecase "UC 12 - Import information from a legacy system that has been in use in several agencies" as UC12
+    "System Administrator" --> UC12
+    usecase "UC 13 - List all employees working in every store of the network" as UC13
+    "Store Network Manager" --> UC13
+
+
+
+
+@enduml

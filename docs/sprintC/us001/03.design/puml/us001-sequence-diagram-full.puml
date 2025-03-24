@@ -1,0 +1,209 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title US001 Sequence Diagram (SD)
+
+autonumber
+
+actor "Unregistered User" as UnregisteredUser
+participant ":PropertiesListUI" as UI
+participant ":PropertiesListController" as CTRL
+participant ":Repositories" as REP
+participant "repositories\n:Repositories" as RepRep
+participant "AdvertisementRepository\n:AdvertisementRepository" as AdvertisementRepository
+
+activate UnregisteredUser
+
+
+UnregisteredUser -> UI : Request properties list
+activate UI
+
+UI -> CTRL** : create
+
+UI -> CTRL : getAdvertisement()
+activate CTRL
+
+CTRL -> REP : getInstance()
+activate REP
+
+REP --> CTRL: repositories
+deactivate REP
+
+CTRL -> RepRep : getAdvertisementRepository()
+activate RepRep
+
+RepRep --> CTRL: AdvertisementRepository
+deactivate RepRep
+
+CTRL -> AdvertisementRepository : getAdvertisement()
+activate AdvertisementRepository
+
+AdvertisementRepository --> CTRL : Advertisement
+deactivate AdvertisementRepository
+
+CTRL --> UI : PropertiesList
+deactivate CTRL
+
+UI --> UnregisteredUser : Return list sorted by latest listings and asks if it wishes to filter the list (yes,no)
+deactivate UI
+
+UnregisteredUser -> UI : Unregistered User responds
+opt UnregisteredUser User wants to filter results
+activate UI
+
+UI --> UnregisteredUser : Ask if it wants to choose between for sale properties and renting properties (yes,no)
+deactivate UI
+
+UnregisteredUser -> UI : Unregistered User responds
+
+opt User wants to choose type of business
+activate UI
+
+ref over CTRL
+c.f. Filter Example
+end ref
+UI -> CTRL :
+activate CTRL
+
+
+CTRL -> REP :
+activate REP
+
+REP --> CTRL:
+deactivate REP
+
+CTRL -> RepRep :
+activate RepRep
+
+RepRep --> CTRL:
+deactivate RepRep
+
+CTRL -> AdvertisementRepository :
+activate AdvertisementRepository
+
+AdvertisementRepository --> CTRL : RequestTypeFilteredList
+deactivate AdvertisementRepository
+
+CTRL --> UI : RequestTypeFilteredList
+deactivate CTRL
+
+UI --> UnregisteredUser : Categorizes properties for rent or sale, lists and sorts by newest, asks if user wants to choose the type of property (yes,no)
+deactivate UI
+
+UnregisteredUser -> UI : Unregistered User responds
+activate UI
+
+
+end
+
+
+opt User wants to choose the type of property
+
+UI --> UnregisteredUser : Ask to choose the type of property, land, house, apartment (l,h,a)
+deactivate UI
+
+UnregisteredUser -> UI : User responds
+activate UI
+
+UI -> CTRL : getPropertyType()
+activate CTRL
+
+CTRL -> REP : getInstance()
+activate REP
+
+REP --> CTRL: repositories
+deactivate REP
+
+CTRL -> RepRep : getPropertyTypeRepository()
+activate RepRep
+
+RepRep --> CTRL: AdvertisementRepository
+deactivate RepRep
+
+CTRL -> AdvertisementRepository : getPropertyType()
+activate AdvertisementRepository
+
+AdvertisementRepository --> CTRL : PropertyTypeList
+deactivate AdvertisementRepository
+
+CTRL --> UI : PropertyAndRequestFilteredList
+deactivate CTRL
+
+
+
+UI --> UnregisteredUser : Lists chosen property type for sale or rent and sorts by newest, asks if it wants to choose the number of bedrooms (yes,no)
+deactivate UI
+
+UnregisteredUser -> UI : Unregistered User responds
+activate UI
+
+
+
+end
+
+
+
+opt User wants to choose the number of bedrooms in the property
+
+UI --> UnregisteredUser : Ask the number of bedrooms it wants (number)
+
+deactivate UI
+
+UnregisteredUser -> UI : Unregistered User responds
+activate UI
+
+end
+UI -> CTRL : getFilteredList(BussinessType,\n PropertyType, number of rooms)
+activate CTRL
+
+CTRL -> REP : getInstance()
+activate REP
+
+REP --> CTRL: repositories
+deactivate REP
+
+CTRL -> RepRep : getAdvertisementRepository()
+activate RepRep
+
+RepRep --> CTRL: AdvertisementRepository
+deactivate RepRep
+
+CTRL -> AdvertisementRepository : getFilteredPropertiesList(BusinessType, RequestType,number of rooms)
+activate AdvertisementRepository
+
+
+AdvertisementRepository --> CTRL : FilteredPropertiesList
+deactivate AdvertisementRepository
+
+deactivate CTRL
+
+UI--> UnregisteredUser : Shows listed properties according to the filters and sorted by most recent and ask if it wishes to use a sorting method
+
+deactivate UI
+end
+
+
+UnregisteredUser -> UI : Unregistered User responds
+activate UI
+
+opt User wants to use a sorting method
+
+UI --> UnregisteredUser : Ask if it wants to sort the list by city, district or price (c,d,p)
+deactivate UI
+
+UnregisteredUser -> UI : Unregistered User responds
+activate UI
+
+UI -> CTRL : getSortedFilteredList(FilteredPropertiesList, SortingPattern)
+activate CTRL
+
+CTRL --> UI : FilteredAndSortedList
+deactivate CTRL
+
+UI --> UnregisteredUser : FilteredAndSortedList
+deactivate UI
+end
+
+@enduml

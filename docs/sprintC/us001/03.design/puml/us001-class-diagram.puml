@@ -1,0 +1,150 @@
+@startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype polyline
+skinparam linetype orto
+
+skinparam classAttributeIconSize 0
+
+'left to right direction
+
+class PropertiesListUI {
+}
+
+class PropertiesListController {
+     +getAdvertisementRepository()
+}
+
+class Filtering {
+
+    +filterRequestType(ArrayList<Advertisement> list, String RequestType)
+    +filterPropertyType(ArrayList<Advertisement> list,String propertyType)
+    +filterNumberOfRooms(ArrayList<Advertisement> list,int numberBedrooms)
+
+}
+
+class Sorting {
+
+    +sortPrice(ArrayList<Advertisement> list)
+    +sortCity(ArrayList<Advertisement> list)
+    +sortState(ArrayList<Advertisement> list)
+
+}
+
+class Repositores {
+     -Repositores()
+     +getInstance() : Repositores
+     +getAdvertisementRepository()
+
+}
+
+
+class AdvertisementRepository{
+    -advertisements: List <Advertisement>
+    +getAdvertisements()
+}
+
+class Advertisement {
+    - client: Client
+    - property: Property
+    - propertyType: PropertyType
+    - requestType: RequestType
+    - address: Address
+    - date: String
+    - commission: Commission
+    - photograph: Photograph
+    + getClient()
+    + getProperty()
+    + getPropertyTypes()
+    + getRequestTypes
+    + getAddress()
+    + getCommission()
+    + getDate()
+    + getPhotograph()
+}
+
+class Address {
+    - streetName: String
+    - cityName: String
+    - zipCode: String
+    - district: String
+    + Address(streetName, cityName, zipCode, district)
+    + getStreetName()
+    + getCityName()
+    + getZipCode()
+    + getDistrict()
+}
+
+
+class Property {
+    - area: Double
+    - price: Double
+    - distanceFromCity: Double
+    - photographList: List<String>
+    - address: Address
+    + Property(area, price, distanceFromCity, photograph, address)
+    + getArea()
+    + getPrice()
+    + getDistanceFromCity()
+    + getPhotograph()
+    + getAddress()
+}
+
+class Residence {
+    - property: Property
+    - numberBedrooms: Int
+    - numberBathrooms: Int
+    - numberParkingSpaces: Int
+    - hasCentralHeating: boolean
+    - hasAirConditioning: boolean
+    + Residence(property, numberBedrooms, numberBathrooms, numberParkingSpaces, hasCentralHeating, hasAirConditioning)
+    + Residence(property, numberBedrooms, numberParkingSpaces)
+    + getProperty()
+    + getNumberBedrooms()
+    + getNumberBathrooms()
+    + getNumberParkingSpaces()
+}
+
+class AvailableEquipment {
+    - airConditioning: Int
+    - centralHeating: Int
+    + AvailableEquipment(airConditioning, centralHeating)
+    + getAirConditioning()
+    + getCentralHeating()
+}
+
+class House {
+    - residence: Residence
+    - existenceBasement: boolean
+    - existenceLoft: boolean
+    - sunExposure: String
+    + House(residence, existenceBasement, existenceLoft, sunExposure)
+    + getResidence()
+    + isExistenceBasement()
+    + isExistenceLoft()
+    + getSunExposure()
+}
+
+
+
+PropertiesListUI .> PropertiesListController
+PropertiesListController .> Repositores : repositories
+Repositores -> Repositores : instance
+PropertiesListController .-> AdvertisementRepository : AdvertisementRepository
+Advertisement -> "*" Property : has
+Residence -l|> Property
+
+House -l|> Residence
+
+Residence "1" - "1" AvailableEquipment : has
+
+AdvertisementRepository --d> "*" Advertisement : advertisement
+
+Property -> Address : located at
+
+PropertiesListController .-> Sorting : sorting
+PropertiesListController .-> Filtering : filtering
+
+
+@enduml

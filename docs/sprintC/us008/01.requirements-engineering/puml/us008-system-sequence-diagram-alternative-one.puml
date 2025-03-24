@@ -1,0 +1,83 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title System Sequence Diagram (SSD) - US008
+
+autonumber
+
+actor "Agent" as Agent
+participant ":System" as System
+
+activate Agent
+
+    Agent -> System : Ask to publish an announcement request
+    activate System
+
+        System --> Agent : Show the list of property announcement requests and ask to select one
+    deactivate System
+
+    Agent -> System : Select a request
+    activate System
+
+    System --> Agent : Show the information it contains, show acceptence \noptions (i.e. accept or decline) and ask to select one
+    deactivate System
+
+    Agent -> System : Select type of acceptence
+    activate System
+
+    alt Acceptance type is accept
+
+    System --> Agent : Show type of commission options \n(i.e. fixed ammount or percentage) and ask to select one
+    deactivate System
+
+    Agent -> System : Select type of commission
+    activate System
+
+        alt Commission type is fixed ammount
+                    System --> Agent : Request data (i.e. fixed ammount)
+                    deactivate System
+
+                    Agent -> System : Type requested data
+                    activate System
+
+                    else Commission type is percentage
+                        System --> Agent : Request data (i.e. percentage)
+                        deactivate System
+
+                        Agent -> System : Type requested data
+                        activate System
+        end
+
+    System --> Agent : Request data (i.e. date)
+    deactivate System
+
+    Agent -> System : Type requested data
+    activate System
+
+    System --> Agent : Show data and ask for confirmation to publish the announcement
+    deactivate System
+
+    Agent -> System : Submit
+    activate System
+
+        else Acceptance type is decline
+            System --> Agent : Request data (i.e. message)
+            deactivate System
+
+            Agent -> System : Type requested data
+            activate System
+
+            System --> Agent : Ask for confirmation to decline the request
+            deactivate System
+
+            Agent -> System : Submit
+            activate System
+
+    end
+
+    System --> Agent : Display operation success
+    deactivate System
+
+@enduml

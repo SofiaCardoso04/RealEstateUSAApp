@@ -1,0 +1,109 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+'title System Sequence Diagram (SSD) - Alternative One
+
+autonumber
+
+actor "Unregistered User" as User
+participant ":System" as System
+
+activate User
+
+      User -> System : Request properties list
+    activate System
+
+    System --> User :Return list sorted by latest listings and asks if it wishes to filter the list (y,n)
+
+    deactivate System
+
+    User -> System: Unregistered User responds
+
+    opt Unregistered User wants to filter results
+
+               activate System
+
+            System --> User :  Ask if it wants to choose between for sale properties and renting properties (y,n)
+                deactivate System
+
+            User -> System : Unregistered User responds
+
+            opt Unregistered User wants to choose between for sale and renting properties
+            activate System
+
+                    System --> User : Ask to choose between rented or for sale properties (r,s)
+
+                    deactivate System
+
+                    User -> System : Unregistered User responds
+            end
+                    activate System
+
+                    System --> User : Categorizes properties for rent or sale, lists and sorts by newest, asks if user wants to choose the type of property (y,n)
+                    User --> System : Unregistered User responds
+
+
+
+            opt Unregistered User wants to choose the type of property
+
+            activate System
+
+                System --> User :  Ask to choose the type of property, land, house, apartment (l,h,a)
+                        deactivate System
+
+                    User -> System : Unregistered User responds
+
+                    activate System
+            end
+                    System --> User : Lists chosen property type for sale or rent and sorts by newest, asks if it wants to choose the number of bedrooms (y,n)
+
+                    deactivate System
+
+                    User -> System : Unregistered User responds
+
+
+
+            opt Unregistered User wants to choose the number of rooms of the property
+
+            activate System
+
+               System --> User : Ask to choose the number of bedrooms (number)
+
+            deactivate System
+
+               User -> System : Unregistered User responds
+
+            activate System
+            end
+
+
+    end
+            System --> User : Categorizes properties based on the chosen filters and sorted by newest and asks if it wants to use a sorting pattern (y,n)
+
+                 deactivate System
+
+                User --> System : Unregistered user responds
+
+                opt Unregistered user wants to sort results
+
+                    activate System
+
+                    System --> User : Asks if it wants to sort the list by city, district or price (c,d,p)
+
+                    deactivate System
+
+                    User -> System : Unregistered user responds
+
+                     activate System
+
+                        System -> User : Sorts the list based on the chosen sorting pattern
+                     deactivate System
+
+
+                end
+
+
+
+@enduml

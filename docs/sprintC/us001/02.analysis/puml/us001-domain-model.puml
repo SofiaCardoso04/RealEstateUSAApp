@@ -1,0 +1,45 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+
+skinparam classAttributeIconSize 0
+
+hide circle
+hide methods
+
+title Domain Model US001
+
+class List {
+rentOrLeash
+propertyType
+numberOfRooms
+price
+parish
+}
+
+class "Unregistered User" {
+}
+
+class Properties {
+}
+
+"Unregistered User" "1" - "1" List : requests >
+List "1" - "0..*" Properties : has >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@enduml

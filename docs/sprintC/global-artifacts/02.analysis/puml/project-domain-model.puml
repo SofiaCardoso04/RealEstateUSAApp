@@ -1,0 +1,225 @@
+@startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype line
+left to right direction
+skinparam classAttributeIconSize 0
+hide circle
+hide methods
+
+title Domain Model
+
+class Agent {
+}
+
+class Advertisement {
+    date
+}
+
+class Commission {
+
+}
+
+class CommissionType {
+    designation
+}
+
+note left of CommissionType
+    commission type
+    can be fixed ammount
+    or percentage
+end note
+
+abstract class Employee {
+}
+
+class OrganizationRole {
+    designation
+}
+
+note top of OrganizationRole
+    organization role can be
+    agent, store manager
+    or store network manager
+end note
+
+class Client {
+}
+
+abstract class Property {
+    area
+    price
+    distanceFromCity
+}
+
+class PropertyType {
+    designation
+}
+
+note top of PropertyType
+    property type can be
+    land, house or apartment
+end note
+
+class Photograph {
+    URI
+}
+
+abstract class Residence {
+    numberBedrooms
+    numberBathrooms
+    numberParkingSpaces
+}
+
+abstract class Address {
+    streetName
+    cityName
+    zipCode
+    district
+}
+
+class House {
+    existenceBasement
+    existenceLoft
+    sunExposure
+}
+
+abstract class Person {
+     name
+     passportCardNumber
+     taxNumber
+     emailAddress
+     phoneNumber
+}
+
+class Store {
+    ID
+    designation
+    phoneNumber
+    emailAddress
+}
+
+class "StoreNetworkManager" as NetworkManager {
+
+}
+
+class "StoreManager" as Manager {
+
+}
+
+class "SystemAdministrator" as Administrator {
+}
+
+abstract class AdvertisementRequest {
+}
+
+class AcceptenceType{
+    designation
+}
+
+note top of AcceptenceType
+    acceptance type
+    can be accept
+    or decline
+end note
+
+class RequestType{
+    designation
+}
+
+note top of RequestType
+    request type can be
+    sale or rent
+end note
+
+class SaleAdvertisementRequest {
+    totalPrice
+}
+
+class RentAdvertisementRequest {
+    rentPricePerMonth
+}
+
+class AvailableEquipment {
+    designation
+}
+
+note top of AvailableEquipment
+    available equipment
+    can be central heating
+    or air conditioning
+end note
+
+class PurchaseOrder {
+    orderAmount
+    Advertisement
+    Client
+}
+
+class Visit {
+    date
+    startTime
+    endTime
+}
+
+
+Manager "1" - "1" Store : manages >
+
+NetworkManager "1 " -down "1..*" Store : manages a >
+
+Property "1" -- "1..*" PurchaseOrder : can have a >
+Property "1  " -- "1" Agent : has a >
+Property "1" - "1" Address : located at >
+Property <|-- Residence
+Property <|-- PropertyType
+Property "1" -- "30" Photograph : needs >
+
+Client "1" -- "1..*" PurchaseOrder : submits a >
+Client "1..*" -- "1" Property : has an <
+Client "1" -- "1..*" PurchaseOrder : submits a >
+Client "1" -- "*" Visit : schedule a >
+
+Store "1" -left "1" Address : located at >
+
+Person "1" - "1" Address : located at  >
+
+Administrator "1" -- "1..*" Employee: registers >
+Employee <|- Manager
+Employee <|-- NetworkManager
+
+Employee <|-down- Agent
+Employee <|-- OrganizationRole
+Employee -- Store : works in >
+
+Agent "1" -- "1..*" PurchaseOrder : accepts or declines >
+Agent "1" - "1" Store : works in >
+Agent "1" -- "1" Commission : defines >
+Agent "1" -- "1" Client : contact <
+Agent "*" -- "*" Visit : confirms >
+
+Advertisement "*" -left "1" Agent : publishes <
+Advertisement "1" -up "1" Commission : needs >
+Advertisement "1" -- "1" Property : has a >
+
+Residence "1" -- "1..*" AvailableEquipment : has >
+Residence <|-- House
+
+Person <|-down Client
+Person <|-down Employee
+
+Administrator "1" -- "1..*" Store : registers  >
+
+AdvertisementRequest "1..*" -- "1" Client : submits <
+AdvertisementRequest "1" -- "1" Property : describes >
+AdvertisementRequest "1" -- "1..*" Agent : opens <
+AdvertisementRequest "1" -- "1" Advertisement : becomes >
+AcceptenceType --|> AdvertisementRequest
+AdvertisementRequest <|-up- SaleAdvertisementRequest
+AdvertisementRequest <|-up- RentAdvertisementRequest
+RequestType --|> AdvertisementRequest
+
+CommissionType --|> Commission
+
+Visit "1" - Property : to a >
+@enduml

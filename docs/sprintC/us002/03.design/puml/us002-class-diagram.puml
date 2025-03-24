@@ -1,0 +1,235 @@
+@startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype polyline
+'skinparam linetype orto
+
+skinparam classAttributeIconSize 0
+
+'left to right direction
+
+class AdvertisementRepository {
+    - advertisements: List<Advertisement>
+    + getAdvertisements()
+    + validateAdvertisement(advertisement)
+    + addAdvertisement(advertisement)
+    + createAdvertisement(client, property, propertyType, requestType,  data, commission, photograph)
+}
+
+class ClientRepository {
+    - clientList: List<Client>
+    + getClientByEmail(ownerEmail)
+}
+
+class PropertyRepository {
+    - properties: List<Property>
+    - residences: List<Residence>
+    - houses: List<House>
+    + getProperties()
+    + getResidences()
+    + getHouses()
+    + validateProperty(property)
+    + validateResidence(residence)
+    + validateHouse(house)
+    + addProperty(property)
+    + addResidence(residence)
+    + addHouse(house)
+    + createProperty(area, distanceFromCity, photograph, address, price)
+    + createResidence(area, distanceFromCity, price, photograph, address, numberBedrooms, numberBathrooms, numberParkingSpaces, availableEquipment)
+    + createHouse(area, distanceFromCity, price, photograph, address, numberBedrooms, numberBathrooms, numberParkingSpaces, availableEquipment, existenceBasement, existenceLoft, sunExposure)
+}
+
+class AddressRepository {
+    + registerAddress(streetName, cityName, zipCode, district)
+    + addAddress(address)
+    + validateAddress(address)
+}
+
+class Agent {
+    - employee: Employee
+    + Agent(employee)
+    + getEmployee()
+}
+
+class Client {
+    - person: Person
+    + Client(person)
+    + anyOwnerHasEmail(emailAddress)
+}
+
+class AvailableEquipment {
+    - airConditioning: Int
+    - centralHeating: Int
+    + AvailableEquipment(airConditioning, centralHeating)
+    + getAirConditioning()
+    + getCentralHeating()
+}
+
+class Advertisement {
+    - client: Client
+    - property: Property
+    - propertyType: String
+    - requestType: String
+    - date: String
+    - commission: Commission
+    + Advertisement(emailAddress, property, propertyType, requestType, date, commission)
+    + getClient()
+    + getProperty()
+    + getPropertyTypes()
+    + getRequestTypes()
+    + getDate()
+    + getCommission()
+}
+
+class Repositories {
+    - Repositories()
+    + getInstance() : Repositories
+    + getAddressRepository()
+    + getClientRepository()
+    + getPropertyRepository()
+    + getAdvertisementRepository()
+}
+
+class PublishController {
+    + PublishController()
+    + getAddressRepository()
+    + getClientRepository()
+    + getPropertyRepository()
+    + getAdvertisementRepository()
+    + addPhotographURIToList(photographURI, photographList)
+    + registerAddress(district, cityName, streetName, zipCode)
+    + createProperty(area, distanceFromCity, photograph, address, price)
+    + createResidence(area, distanceFromCity, price, photograph, address, numberBedrooms, numberBathrooms, numberParkingSpaces, availableEquipment)
+    + createHouse(area, distanceFromCity, price, photograph, address, numberBedrooms, numberBathrooms, numberParkingSpaces, availableEquipment, existenceBasement, existenceLoft, sunExposure)
+}
+
+class RequestType {
+    - requestTypes: String[]
+    + getRequestTypes()
+}
+
+class CommissionType {
+    - commissionTypes: String[]
+    + getCommissionTypes()
+}
+
+class Property {
+     - area: Double
+     - price: Double
+     - distanceFromCity: Double
+     - photograph: String
+     - address: Address
+     + Property(area, price, distanceFromCity, photograph, address)
+     + getArea()
+     + getPrice()
+     + getDistanceFromCity()
+     + getPhotograph()
+     + getAddress()
+}
+
+class PropertyType {
+    - propertyTypes: String[]
+    + getPropertyTypes()
+}
+
+class Residence {
+    - numberBedrooms: Int
+    - numberBathrooms: Int
+    - numberParkingSpaces: Int
+    - availableEquipment: AvailableEquipment
+    + Residence(area, distanceFromCity, price, photograph, address, numberBedrooms, numberBathrooms, numberParkingSpaces, hasCentralHeating, hasAirConditioning)
+    + Residence(area, distanceFromCity, price, photograph, address, property, numberBedrooms, numberParkingSpaces)
+    + getNumberBedrooms()
+    + getNumberBathrooms()
+    + getNumberParkingSpaces()
+    + getAvailableEquipment()
+}
+
+class House {
+    - existenceBasement: int
+    - existenceLoft: int
+    - sunExposure: String
+    + House(area, distanceFromCity, price, photograph, address, numberBedrooms, numberBathrooms, numberParkingSpaces, availableEquipment, existenceBasement, existenceLoft, sunExposure)
+    + getResidence()
+    + isExistenceBasement()
+    + isExistenceLoft()
+    + getSunExposure()
+}
+
+class Address {
+    - streetName: String
+    - cityName: String
+    - zipCode: String
+    - district: String
+    + Address(streetName, cityName, zipCode, district)
+    + getStreetName()
+    + getCityName()
+    + getZipCode()
+    + getDistrict()
+}
+
+class Photograph {
+    - photographs: String[]
+    + getPhotograph()
+}
+
+class Employee {
+    - person: Person
+    - organizationRole: OrganizationRole
+    + Employee(person, organizationRole)
+    + getPerson()
+    + getOrganizationRole()
+}
+
+class PublishUI {
+}
+
+Repositories -> Repositories : instance
+
+PublishUI .> PublishController
+
+PublishController .> Repositories : repositories
+
+Repositories --> "1" AdvertisementRepository
+Repositories --> "1" AddressRepository
+Repositories --> "1" ClientRepository
+Repositories --> "1" PropertyRepository
+
+PropertyRepository -> "*" Property
+
+AdvertisementRepository --> "*" Advertisement: advertisement
+
+PublishController .> AdvertisementRepository : advertisementRepository
+PublishController .> AddressRepository : addressRepository
+PublishController .> ClientRepository : clientRepository
+PublishController .> PropertyRepository: propertyRepository
+
+PublishController ..> Advertisement : advertisement
+
+ClientRepository --> "*" Client : client
+
+Advertisement --> "*" RequestType : requests
+Advertisement --> "1" Client : client
+Advertisement --> "1" Agent : createdBy
+Advertisement --> "1" CommissionType : requests
+
+Agent --|> Employee
+
+RequestType "1" --> "1" Property : has
+
+Address "1" <- "*" Property : located at
+Address "1" <-- "*" Employee : located at
+
+Property "1" --> "30" Photograph : has
+Property <|-- Residence
+Property <|-- PropertyType
+Property "1" --> "1" Advertisement : has
+
+Residence "1" --> "*" AvailableEquipment : has
+
+AddressRepository --> "*" Address: address
+
+House -|> Residence
+
+@enduml
