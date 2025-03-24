@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.ipp.isep.dei.esoft.project.ui.gui.controllers.BookingListGUIController">
+   <children>
+      <Button fx:id="answerButton" layoutX="406.0" layoutY="302.0" mnemonicParsing="false" onAction="#switchToAnswerVisits" prefHeight="26.0" prefWidth="106.0" text="Answer Request" />
+      <DatePicker fx:id="beginDatePicker" layoutX="372.0" layoutY="99.0" onAction="#getBeginDate" promptText="Begin date:" />
+      <DatePicker fx:id="endDatePicker" layoutX="372.0" layoutY="174.0" onAction="#getEndDate" promptText="End date:" />
+      <Button fx:id="filterButton" layoutX="406.0" layoutY="251.0" mnemonicParsing="false" onAction="#filterRequests" prefHeight="26.0" prefWidth="106.0" text="Show Requests" />
+      <ListView fx:id="visits" layoutX="30.0" layoutY="67.0" onMouseClicked="#selectedRequest" prefHeight="304.0" prefWidth="270.0" />
+      <Label fx:id="topLabel" alignment="CENTER" layoutX="229.0" layoutY="14.0" text="Visit Requests">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Label>
+      <Label layoutX="108.0" layoutY="48.0" text="(Choose begin date and end date before pressing show requests' button)" />
+      <Button fx:id="backButton" layoutX="406.0" layoutY="344.0" mnemonicParsing="false" onAction="#backToAgentMenu" prefHeight="26.0" prefWidth="106.0" text="Back" />
+   </children>
+</AnchorPane>

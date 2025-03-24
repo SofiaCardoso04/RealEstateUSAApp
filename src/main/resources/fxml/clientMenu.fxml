@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.ipp.isep.dei.esoft.project.ui.gui.controllers.ClientRoleGUIController">
+   <children>
+      <Label fx:id="topLabel" alignment="CENTER" layoutX="1.0" layoutY="37.0" prefHeight="18.0" prefWidth="600.0" text="Client Menu">
+         <font>
+            <Font size="26.0" />
+         </font>
+      </Label>
+      <Button fx:id="requestButton" layoutX="247.0" layoutY="125.0" mnemonicParsing="false" onAction="#submitARequest" text="Submit a request" />
+      <Button fx:id="visitButton" layoutX="247.0" layoutY="187.0" mnemonicParsing="false" onAction="#scheduleAVisit" prefHeight="26.0" prefWidth="106.0" text="Schedule a visit" />
+      <Button fx:id="orderButton" layoutX="214.0" layoutY="250.0" mnemonicParsing="false" onAction="#makeAnOrder" text="Make an order for a property" />
+      <Button fx:id="appointmentButton" layoutX="187.0" layoutY="311.0" mnemonicParsing="false" onAction="#appointmentRequest" text="Accept or reject  an appoitment request" />
+      <Label layoutX="13.0" layoutY="75.0" prefHeight="18.0" prefWidth="550.0">
+         <font>
+            <Font size="16.0" />
+         </font></Label>
+      <Button fx:id="logout" layoutX="493.0" layoutY="338.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
+   </children>
+</AnchorPane>

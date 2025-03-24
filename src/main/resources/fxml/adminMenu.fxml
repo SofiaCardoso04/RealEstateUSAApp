@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.ipp.isep.dei.esoft.project.ui.gui.controllers.AdminRoleGUIController">
+   <children>
+      <Label fx:id="topLabel" alignment="CENTER" layoutX="1.0" layoutY="41.0" prefHeight="38.0" prefWidth="600.0" text="Admin Menu">
+         <font>
+            <Font size="26.0" />
+         </font>
+      </Label>
+      <Button fx:id="store" layoutX="251.0" layoutY="107.0" mnemonicParsing="false" onAction="#registerAStore" text="Register a store" />
+      <Button fx:id="employee" layoutX="226.0" layoutY="168.0" mnemonicParsing="false" onAction="#registerAnEmployee" text="Register a new Employee" />
+      <Button fx:id="accessStores" layoutX="144.0" layoutY="222.0" mnemonicParsing="false" onAction="#accessStores" text="Access the stores, addresses and accounts in the system" />
+      <Button fx:id="importFile" layoutX="212.0" layoutY="282.0" mnemonicParsing="false" onAction="#importFiles" text="Import file from legacy system" />
+      <Button fx:id="logout" layoutX="493.0" layoutY="338.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
+   </children>
+</AnchorPane>
